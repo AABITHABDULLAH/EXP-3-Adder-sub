@@ -1,4 +1,4 @@
-# EXP-3-Adder-sub
+<img width="1920" height="1080" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/11caa0cc-57a5-48d7-8efe-b3a3df68db73" /># EXP-3-Adder-sub
 ## Design and Verification of Half Adder and Half Subtractor
 ### Aim
 To design and verify basic one-bit arithmetic circuits using Verilog HDL.
@@ -19,9 +19,66 @@ half_add_sub_tb.v	Stimulus and VCD generation
 
 ### Verilog Program
 ```
+module half_adder (
+    input  wire A,
+    input  wire B,
+    output wire Sum,
+    output wire Carry
+);
+    assign Sum   = A ^ B;   // XOR
+    assign Carry = A & B;   // AND
+endmodule
+ 
+module half_subtractor (
+    input  wire A,
+    input  wire B,
+    output wire Diff,
+    output wire Borrow
+);
+    assign Diff   = A ^ B;      // XOR
+    assign Borrow = (~A) & B;  // A' . B
+endmodule
 ```
 ### Testbench Program
-
+```
+module tb3;
+    reg A, B;
+    wire Sum, Carry;
+    wire Diff, Borrow;
+ 
+    // Instantiate the Half Adder
+    half_adder ha_uut (
+        .A(A),
+        .B(B),
+        .Sum(Sum),
+        .Carry(Carry)
+    );
+ 
+    // Instantiate the Half Subtractor
+    half_subtractor hs_uut (
+        .A(A),
+        .B(B),
+        .Diff(Diff),
+        .Borrow(Borrow)
+    );
+ 
+    initial begin
+        // ---- VCD dump setup ----
+        $dumpfile("half_add_sub.vcd");   // name of the VCD file to be generated
+        $dumpvars(0, tb3);                // dump all signals in this testbench hierarchy
+ 
+        // ---- Apply all 4 input combinations ----
+        $monitor("Time=%0t A=%b B=%b | Sum=%b Carry=%b | Diff=%b Borrow=%b",
+                   $time, A, B, Sum, Carry, Diff, Borrow);
+        A = 0; B = 0; #10;
+        A = 0; B = 1; #10;
+        A = 1; B = 0; #10;
+        A = 1; B = 1; #10;
+ 
+        #10 $finish;
+    end
+endmodule
+```
 
 ### Truth Table
 
@@ -83,7 +140,8 @@ The Half Adder and Half Subtractor were realized using Verilog HDL:
 
 The design was compiled and simulated using Synopsys VCS, and the functionality was verified using DVE waveform analysis, matching the expected truth table.
 
-### Output
+### Output!
+<img width="1920" height="1080" alt="Screenshot (12)" src="https://github.com/user-attachments/assets/02937602-9def-4922-8554-2e546c16b880" />
 
 
 ### Viva-Voce Questions
